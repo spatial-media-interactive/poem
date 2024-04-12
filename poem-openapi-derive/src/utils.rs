@@ -189,15 +189,14 @@ pub(crate) fn create_object_name(
         let (first, tail) = types.split_first().unwrap();
         quote!({
             use ::std::convert::From;
-            let mut name = ::std::string::String::from(#name);
+            let mut name = ::std::string::String::from(#name).replace('(', "_").replace(')', "");
 
-            name.push('<');
-            name.push_str(&<#first as #crate_name::types::Type>::name());
+            name.push('_');
+            name.push_str(&<#first as #crate_name::types::Type>::name().replace('(', "_").replace(')', ""));
             #(
                 name.push_str(", ");
-                name.push_str(&<#tail as #crate_name::types::Type>::name());
+                name.push_str(&<#tail as #crate_name::types::Type>::name().replace('(', "_").replace(')', ""));
             )*
-            name.push('>');
 
             name
         })
